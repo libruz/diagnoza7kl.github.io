@@ -100,16 +100,17 @@
             color: var(--dark-green);
         }
         
-        input[type="text"], select {
+        input[type="text"], select, textarea {
             padding: 10px 15px;
             border: 2px solid #ddd;
             border-radius: 8px;
             font-size: 16px;
             width: 100%;
             transition: border-color 0.3s;
+            resize: vertical;
         }
         
-        input[type="text"]:focus, select:focus {
+        input[type="text"]:focus, select:focus, textarea:focus {
             outline: none;
             border-color: var(--light-green);
         }
@@ -374,6 +375,13 @@
             display: none;
         }
         
+        .points-info {
+            font-size: 14px;
+            color: var(--dark-green);
+            font-style: italic;
+            margin-top: 5px;
+        }
+        
         @media (max-width: 768px) {
             .container {
                 margin: 10px;
@@ -402,7 +410,7 @@
     <div class="container">
         <div class="header">
             <h1>DIAGNOZA Z J. ANGIELSKIEGO</h1>
-            <div class="subtitle">Klasa 7 - Test diagnozujący</div>
+            <div class="subtitle">Klasa 7 - Test diagnozujący (75 punktów)</div>
         </div>
         
         <div class="test-content">
@@ -421,8 +429,9 @@
             
             <!-- Zadanie 1 -->
             <div id="task-1" class="task-section">
-                <h2 class="task-title">Zadanie 1</h2>
+                <h2 class="task-title">Zadanie 1 (5 p.)</h2>
                 <p>Posłuchaj wypowiedzi (A–E) i dopasuj zdania do osób mówiących (1–5).</p>
+                <div class="points-info">5 punktów</div>
                 
                 <div class="audio-player">
                     <div>
@@ -509,8 +518,9 @@
             
             <!-- Zadanie 2 -->
             <div id="task-2" class="task-section">
-                <h2 class="task-title">Zadanie 2</h2>
+                <h2 class="task-title">Zadanie 2 (5 p.)</h2>
                 <p>Wysłuchaj nagrania i uzupełnij zdania. W każdą lukę należy wpisać jeden wyraz.</p>
+                <div class="points-info">5 punktów</div>
                 
                 <div class="audio-player">
                     <div>
@@ -562,8 +572,9 @@
             
             <!-- Zadanie 3 -->
             <div id="task-3" class="task-section">
-                <h2 class="task-title">Zadanie 3</h2>
+                <h2 class="task-title">Zadanie 3 (5 p.)</h2>
                 <p>Posłuchaj nagrania i określ czy podane zdania są prawdziwe – True (T) czy fałszywe – False (F).</p>
+                <div class="points-info">5 punktów</div>
                 
                 <div class="audio-player">
                     <div>
@@ -625,8 +636,9 @@
             
             <!-- Zadanie 4 -->
             <div id="task-4" class="task-section">
-                <h2 class="task-title">Zadanie 4</h2>
+                <h2 class="task-title">Zadanie 4 (5 p.)</h2>
                 <p>Wybierz prawidłowe słowo lub frazę.</p>
+                <div class="points-info">5 punktów</div>
                 
                 <div class="question">
                     <p>1. They found some __________ on the window and the door.</p>
@@ -685,8 +697,9 @@
             
             <!-- Zadanie 5 -->
             <div id="task-5" class="task-section">
-                <h2 class="task-title">Zadanie 5</h2>
+                <h2 class="task-title">Zadanie 5 (5 p.)</h2>
                 <p>Przetłumacz na język angielski fragmenty zdań z nawiasów.</p>
+                <div class="points-info">5 punktów</div>
                 
                 <div class="question">
                     <p>1. __________ sugar do you take in your tea?</p>
@@ -723,19 +736,509 @@
                 </div>
             </div>
             
+            <!-- Zadanie 6 -->
+            <div id="task-6" class="task-section">
+                <h2 class="task-title">Zadanie 6 (5 p.)</h2>
+                <p>Uzupełnij zdania odpowiednią formą czasownika.</p>
+                <div class="points-info">5 punktów</div>
+                
+                <div class="question">
+                    <p>1. If you (feel) __________ dizzy, you should sit down and take a deep breath.</p>
+                    <input type="text" id="q6-1" placeholder="Wpisz formę czasownika">
+                </div>
+                
+                <div class="question">
+                    <p>2. What __________ your mum (do) __________ right now?</p>
+                    <input type="text" id="q6-2" placeholder="Wpisz pierwszą formę">
+                    <input type="text" id="q6-3" placeholder="Wpisz drugą formę" style="margin-top: 10px;">
+                </div>
+                
+                <div class="question">
+                    <p>3. Mike is (intelligent) __________ than I am.</p>
+                    <input type="text" id="q6-4" placeholder="Wpisz stopień wyższy">
+                </div>
+                
+                <div class="question">
+                    <p>4. __________ he (go) __________ to school every Saturday?</p>
+                    <input type="text" id="q6-5" placeholder="Wpisz pierwszą formę">
+                    <input type="text" id="q6-6" placeholder="Wpisz drugą formę" style="margin-top: 10px;">
+                </div>
+                
+                <div class="question">
+                    <p>5. I (be able to) __________ do it on my own.</p>
+                    <input type="text" id="q6-7" placeholder="Wpisz formę czasownika">
+                </div>
+                
+                <div class="navigation">
+                    <button class="nav-button" onclick="prevTask()">
+                        <i class="fas fa-arrow-left"></i> Poprzednie
+                    </button>
+                    <button class="nav-button" onclick="nextTask()">
+                        Następne <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Zadanie 7 -->
+            <div id="task-7" class="task-section">
+                <h2 class="task-title">Zadanie 7 (5 p.)</h2>
+                <p>Uzupełnij dialogi odpowiednimi słowami.</p>
+                <div class="points-info">5 punktów</div>
+                
+                <div class="question">
+                    <p>1. – Do you want to go to the shopping centre with me today?<br>
+                       – I'm __________ I can't go. I have a test tomorrow.</p>
+                    <input type="text" id="q7-1" placeholder="Wpisz brakujące słowo">
+                </div>
+                
+                <div class="question">
+                    <p>2. – Can I take a photo of that man?<br>
+                       – In my __________, you should ask him first.</p>
+                    <input type="text" id="q7-2" placeholder="Wpisz brakujące słowo">
+                </div>
+                
+                <div class="question">
+                    <p>3. – Horror stories are so boring!<br>
+                       – I __________ agree! They're fantastic.</p>
+                    <input type="text" id="q7-3" placeholder="Wpisz brakujące słowo">
+                </div>
+                
+                <div class="question">
+                    <p>4. – Do you want a chocolate milkshake?<br>
+                       – I would __________ have a banana milkshake.</p>
+                    <input type="text" id="q7-4" placeholder="Wpisz brakujące słowo">
+                </div>
+                
+                <div class="question">
+                    <p>5. – What __________ I do now?<br>
+                       – Maybe talk to your parents?</p>
+                    <input type="text" id="q7-5" placeholder="Wpisz brakujące słowo">
+                </div>
+                
+                <div class="navigation">
+                    <button class="nav-button" onclick="prevTask()">
+                        <i class="fas fa-arrow-left"></i> Poprzednie
+                    </button>
+                    <button class="nav-button" onclick="nextTask()">
+                        Następne <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Zadanie 8 -->
+            <div id="task-8" class="task-section">
+                <h2 class="task-title">Zadanie 8 (5 p.)</h2>
+                <p>Wybierz właściwą odpowiedź.</p>
+                <div class="points-info">5 punktów</div>
+                
+                <div class="question">
+                    <p>1. This box is not big __________ for the present.</p>
+                    <select id="q8-1">
+                        <option value="">-- Wybierz odpowiedź --</option>
+                        <option value="too">too</option>
+                        <option value="enough">enough</option>
+                    </select>
+                </div>
+                
+                <div class="question">
+                    <p>2. Yesterday at 11 o'clock I __________ to play a new song.</p>
+                    <select id="q8-2">
+                        <option value="">-- Wybierz odpowiedź --</option>
+                        <option value="learnt">learnt</option>
+                        <option value="was learning">was learning</option>
+                    </select>
+                </div>
+                
+                <div class="question">
+                    <p>3. He is running too fast. He is going to __________.</p>
+                    <select id="q8-3">
+                        <option value="">-- Wybierz odpowiedź --</option>
+                        <option value="fall over">fall over</option>
+                        <option value="falls over">falls over</option>
+                    </select>
+                </div>
+                
+                <div class="question">
+                    <p>4. Monika __________ her homework when her best friend came over.</p>
+                    <select id="q8-4">
+                        <option value="">-- Wybierz odpowiedź --</option>
+                        <option value="did">did</option>
+                        <option value="was doing">was doing</option>
+                    </select>
+                </div>
+                
+                <div class="question">
+                    <p>5. I hope they __________.</p>
+                    <select id="q8-5">
+                        <option value="">-- Wybierz odpowiedź --</option>
+                        <option value="will come">will come</option>
+                        <option value="are coming">are coming</option>
+                    </select>
+                </div>
+                
+                <div class="navigation">
+                    <button class="nav-button" onclick="prevTask()">
+                        <i class="fas fa-arrow-left"></i> Poprzednie
+                    </button>
+                    <button class="nav-button" onclick="nextTask()">
+                        Następne <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Zadanie 9 -->
+            <div id="task-9" class="task-section">
+                <h2 class="task-title">Zadanie 9 (5 p.)</h2>
+                <p>Wybierz właściwą reakcję.</p>
+                <div class="points-info">5 punktów</div>
+                
+                <div class="question">
+                    <p>1. Koleżanka pyta cię czy to dobry pomysł kupić kwiaty na imieniny mamy. Powiedz, że to dobry pomysł.</p>
+                    <select id="q9-1">
+                        <option value="">-- Wybierz odpowiedź --</option>
+                        <option value="A">A. You should buy your mum some flowers.</option>
+                        <option value="B">B. You can buy your mum some flowers.</option>
+                        <option value="C">C. Yes, it would be a good idea to buy her flowers.</option>
+                    </select>
+                </div>
+                
+                <div class="question">
+                    <p>2. Powiedz koledze, że nie można tutaj grać w piłkę nożną.</p>
+                    <select id="q9-2">
+                        <option value="">-- Wybierz odpowiedź --</option>
+                        <option value="A">A. You cannot play football here.</option>
+                        <option value="B">B. You can play football here.</option>
+                        <option value="C">C. Playing football is allowed here.</option>
+                    </select>
+                </div>
+                
+                <div class="question">
+                    <p>3. Ekspedientka pyta czy chcesz reklamówkę na Twoje zakupy. Powiedz, że tak.</p>
+                    <select id="q9-3">
+                        <option value="">-- Wybierz odpowiedź --</option>
+                        <option value="A">A. Yes, here you are.</option>
+                        <option value="B">B. Yes, I would one, please.</option>
+                        <option value="C">C. I have got a bag.</option>
+                    </select>
+                </div>
+                
+                <div class="question">
+                    <p>4. Powiedz, że planujesz kupić nową książkę.</p>
+                    <select id="q9-4">
+                        <option value="">-- Wybierz odpowiedź --</option>
+                        <option value="A">A. I am planning to buy a new book.</option>
+                        <option value="B">B. I hope to buy a new book.</option>
+                        <option value="C">C. I can't wait to buy a new book.</option>
+                    </select>
+                </div>
+                
+                <div class="question">
+                    <p>5. Kolega zaprasza cię na wyjście do kina. Niestety masz dużo nauki. Powiedz, że może innym razem.</p>
+                    <select id="q9-5">
+                        <option value="">-- Wybierz odpowiedź --</option>
+                        <option value="A">A. Maybe some other time.</option>
+                        <option value="B">B. I haven't got time.</option>
+                        <option value="C">C. There isn't much time left.</option>
+                    </select>
+                </div>
+                
+                <div class="navigation">
+                    <button class="nav-button" onclick="prevTask()">
+                        <i class="fas fa-arrow-left"></i> Poprzednie
+                    </button>
+                    <button class="nav-button" onclick="nextTask()">
+                        Następne <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Zadanie 10 -->
+            <div id="task-10" class="task-section">
+                <h2 class="task-title">Zadanie 10 (5 p.)</h2>
+                <p>Uzupełnij zdania używając czasu future simple.</p>
+                <div class="points-info">5 punktów</div>
+                
+                <div class="question">
+                    <p>1. My best friend (have) __________ a surprise party next week.</p>
+                    <input type="text" id="q10-1" placeholder="Wpisz formę czasownika">
+                </div>
+                
+                <div class="question">
+                    <p>2. It's so hot. I (open) __________ the window.</p>
+                    <input type="text" id="q10-2" placeholder="Wpisz formę czasownika">
+                </div>
+                
+                <div class="question">
+                    <p>3. they (wait) __________ for us?</p>
+                    <input type="text" id="q10-3" placeholder="Wpisz formę czasownika">
+                </div>
+                
+                <div class="question">
+                    <p>4. I think it (be) __________ a great party!</p>
+                    <input type="text" id="q10-4" placeholder="Wpisz formę czasownika">
+                </div>
+                
+                <div class="question">
+                    <p>5. We (not catch) __________ that bus to the city centre.</p>
+                    <input type="text" id="q10-5" placeholder="Wpisz formę czasownika">
+                </div>
+                
+                <div class="navigation">
+                    <button class="nav-button" onclick="prevTask()">
+                        <i class="fas fa-arrow-left"></i> Poprzednie
+                    </button>
+                    <button class="nav-button" onclick="nextTask()">
+                        Następne <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Zadanie 11 -->
+            <div id="task-11" class="task-section">
+                <h2 class="task-title">Zadanie 11 (5 p.)</h2>
+                <p>Uzupełnij luki wpisując czasowniki w nawiasach w czasie past simple lub past continuous.</p>
+                <div class="points-info">5 punktów</div>
+                
+                <div class="question">
+                    <p>1. Mum and dad (not call) __________ me last week.</p>
+                    <input type="text" id="q11-1" placeholder="Wpisz formę czasownika">
+                </div>
+                
+                <div class="question">
+                    <p>2. __________ you (have) __________ a good time yesterday?</p>
+                    <input type="text" id="q11-2" placeholder="Wpisz pierwszą formę">
+                    <input type="text" id="q11-3" placeholder="Wpisz drugą formę" style="margin-top: 10px;">
+                </div>
+                
+                <div class="question">
+                    <p>3. They (walk) __________ home when they saw a kitten in the middle of the street.</p>
+                    <input type="text" id="q11-4" placeholder="Wpisz formę czasownika">
+                </div>
+                
+                <div class="question">
+                    <p>4. He (leave) __________ home late yesterday.</p>
+                    <input type="text" id="q11-5" placeholder="Wpisz formę czasownika">
+                </div>
+                
+                <div class="question">
+                    <p>5. __________ Freddy (eat) __________ sushi at around 5:30 yesterday?</p>
+                    <input type="text" id="q11-6" placeholder="Wpisz pierwszą formę">
+                    <input type="text" id="q11-7" placeholder="Wpisz drugą formę" style="margin-top: 10px;">
+                </div>
+                
+                <div class="navigation">
+                    <button class="nav-button" onclick="prevTask()">
+                        <i class="fas fa-arrow-left"></i> Poprzednie
+                    </button>
+                    <button class="nav-button" onclick="nextTask()">
+                        Następne <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Zadanie 12 -->
+            <div id="task-12" class="task-section">
+                <h2 class="task-title">Zadanie 12 (5 p.)</h2>
+                <p>Uzupełnij zdania wpisując w luki czasowniki w odpowiedniej formie. Użyj czasu past simple.</p>
+                <div class="points-info">5 punktów</div>
+                
+                <div class="question">
+                    <p>1. __________ he (watch) __________ cartoons with his dad?</p>
+                    <input type="text" id="q12-1" placeholder="Wpisz pierwszą formę">
+                    <input type="text" id="q12-2" placeholder="Wpisz drugą formę" style="margin-top: 10px;">
+                </div>
+                
+                <div class="question">
+                    <p>2. __________ you (visit) __________ your friends on Wednesday?</p>
+                    <input type="text" id="q12-3" placeholder="Wpisz pierwszą formę">
+                    <input type="text" id="q12-4" placeholder="Wpisz drugą formę" style="margin-top: 10px;">
+                </div>
+                
+                <div class="question">
+                    <p>3. We (not play) __________ football at school.</p>
+                    <input type="text" id="q12-5" placeholder="Wpisz formę czasownika">
+                </div>
+                
+                <div class="question">
+                    <p>4. I (walk) __________ the dog yesterday.</p>
+                    <input type="text" id="q12-6" placeholder="Wpisz formę czasownika">
+                </div>
+                
+                <div class="question">
+                    <p>5. They (not like) __________ the concert at all.</p>
+                    <input type="text" id="q12-7" placeholder="Wpisz formę czasownika">
+                </div>
+                
+                <div class="navigation">
+                    <button class="nav-button" onclick="prevTask()">
+                        <i class="fas fa-arrow-left"></i> Poprzednie
+                    </button>
+                    <button class="nav-button" onclick="nextTask()">
+                        Następne <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Zadanie 13 -->
+            <div id="task-13" class="task-section">
+                <h2 class="task-title">Zadanie 13 (5 p.)</h2>
+                <p>Przetłumacz na język angielski fragmenty zdań z nawiasów.</p>
+                <div class="points-info">5 punktów</div>
+                
+                <div class="question">
+                    <p>1. If you have a very difficult exam, you need to (uczysz się) __________ a lot before it.</p>
+                    <input type="text" id="q13-1" placeholder="Wpisz tłumaczenie">
+                </div>
+                
+                <div class="question">
+                    <p>2. (Jeśli masz) __________ a cold, you cough and have a runny nose.</p>
+                    <input type="text" id="q13-2" placeholder="Wpisz tłumaczenie">
+                </div>
+                
+                <div class="question">
+                    <p>3. If someone has a headache, they usually (biorą lekarstwo) __________.</p>
+                    <input type="text" id="q13-3" placeholder="Wpisz tłumaczenie">
+                </div>
+                
+                <div class="question">
+                    <p>4. (Jeśli mój tata ma) __________ a cough, he takes some syrup.</p>
+                    <input type="text" id="q13-4" placeholder="Wpisz tłumaczenie">
+                </div>
+                
+                <div class="question">
+                    <p>5. If you don't drink anything, you (jesteś spragniony) __________.</p>
+                    <input type="text" id="q13-5" placeholder="Wpisz tłumaczenie">
+                </div>
+                
+                <div class="navigation">
+                    <button class="nav-button" onclick="prevTask()">
+                        <i class="fas fa-arrow-left"></i> Poprzednie
+                    </button>
+                    <button class="nav-button" onclick="nextTask()">
+                        Następne <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Zadanie 14 -->
+            <div id="task-14" class="task-section">
+                <h2 class="task-title">Zadanie 14 (5 p.)</h2>
+                <p>Zakreśl prawidłowe słowo.</p>
+                <div class="points-info">5 punktów</div>
+                
+                <div class="question">
+                    <p>1. How do you celebrate __________ Children's Day?</p>
+                    <select id="q14-1">
+                        <option value="">-- Wybierz odpowiedź --</option>
+                        <option value="a">a</option>
+                        <option value="-">- (brak przedimka)</option>
+                        <option value="the">the</option>
+                    </select>
+                </div>
+                
+                <div class="question">
+                    <p>2. Look, there is __________ dog in our living room.</p>
+                    <select id="q14-2">
+                        <option value="">-- Wybierz odpowiedź --</option>
+                        <option value="a">a</option>
+                        <option value="an">an</option>
+                    </select>
+                </div>
+                
+                <div class="question">
+                    <p>3. I hate eating __________ cucumbers.</p>
+                    <select id="q14-3">
+                        <option value="">-- Wybierz odpowiedź --</option>
+                        <option value="-">- (brak przedimka)</option>
+                        <option value="the">the</option>
+                    </select>
+                </div>
+                
+                <div class="question">
+                    <p>4. My favourite kind of __________ music is rock.</p>
+                    <select id="q14-4">
+                        <option value="">-- Wybierz odpowiedź --</option>
+                        <option value="the">the</option>
+                        <option value="-">- (brak przedimka)</option>
+                    </select>
+                </div>
+                
+                <div class="question">
+                    <p>5. This is my new car. __________ car is really fast.</p>
+                    <select id="q14-5">
+                        <option value="">-- Wybierz odpowiedź --</option>
+                        <option value="The">The</option>
+                        <option value="A">A</option>
+                    </select>
+                </div>
+                
+                <div class="navigation">
+                    <button class="nav-button" onclick="prevTask()">
+                        <i class="fas fa-arrow-left"></i> Poprzednie
+                    </button>
+                    <button class="nav-button" onclick="nextTask()">
+                        Następne <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Zadanie 15 -->
+            <div id="task-15" class="task-section">
+                <h2 class="task-title">Zadanie 15 (5 p.)</h2>
+                <p>Uzupełnij luki wstawiając a, an, the, lub zero article (-).</p>
+                <div class="points-info">5 punktów</div>
+                
+                <div class="question">
+                    <p>1. I've got __________ hamster and two guinea pigs.</p>
+                    <input type="text" id="q15-1" placeholder="Wpisz a, an, the lub -">
+                </div>
+                
+                <div class="question">
+                    <p>2. __________ summer is my favourite season - you can sunbathe and go surfing.</p>
+                    <input type="text" id="q15-2" placeholder="Wpisz a, an, the lub -">
+                </div>
+                
+                <div class="question">
+                    <p>3. My birthday is in __________ May.</p>
+                    <input type="text" id="q15-3" placeholder="Wpisz a, an, the lub -">
+                </div>
+                
+                <div class="question">
+                    <p>4. There is a new boy in our class. __________ boy's name is Timmy.</p>
+                    <input type="text" id="q15-4" placeholder="Wpisz a, an, the lub -">
+                </div>
+                
+                <div class="question">
+                    <p>5. I want to buy __________ orange to make some fresh juice.</p>
+                    <input type="text" id="q15-5" placeholder="Wpisz a, an, the lub -">
+                </div>
+                
+                <div class="navigation">
+                    <button class="nav-button" onclick="prevTask()">
+                        <i class="fas fa-arrow-left"></i> Poprzednie
+                    </button>
+                    <button class="nav-button" onclick="nextTask()">
+                        Następne <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+            
             <!-- Komunikat ukończenia -->
             <div id="completion-section" class="task-section">
                 <div class="completion-message">
                     <h2><i class="fas fa-check-circle"></i> Test ukończony!</h2>
-                    <p>Dziękujemy za wypełnienie testu diagnozującego.</p>
+                    <p>Dziękujemy za wypełnienie testu diagnozującego z języka angielskiego.</p>
                     <p>Twoje odpowiedzi zostały zapisane i oczekują na ocenę przez nauczyciela.</p>
-                    <p>Możesz zamknąć tę stronę.</p>
+                    <p>Łączna liczba punktów: <strong>75</strong></p>
                     <div id="save-message" class="success-message" style="display: none;">
-                        <i class="fas fa-check"></i> Odpowiedzi zostały pomyślnie zapisane w bazie danych.
+                        <i class="fas fa-check"></i> Odpowiedzi zostały pomyślnie zapisane.
                     </div>
                     <div id="save-error" class="error-message" style="display: none;">
                         <i class="fas fa-exclamation-triangle"></i> Wystąpił błąd podczas zapisywania odpowiedzi.
                     </div>
+                    <button class="nav-button" onclick="exportAnswers()" style="margin-top: 20px;">
+                        <i class="fas fa-download"></i> Eksportuj odpowiedzi
+                    </button>
                 </div>
             </div>
             
@@ -752,35 +1255,34 @@
         </div>
     </div>
     
-    <!-- Audio elementy (ukryte) -->
-    <audio id="audio-file-1" preload="auto"></audio>
-    <audio id="audio-file-2" preload="auto"></audio>
-    <audio id="audio-file-3" preload="auto"></audio>
+    <!-- Audio elementy (ukryte) - TU PODMIENISZ NA SWOJE NAGRANIA -->
+    <audio id="audio-file-1" src="nagranie1.mp3" preload="auto"></audio>
+    <audio id="audio-file-2" src="nagranie2.mp3" preload="auto"></audio>
+    <audio id="audio-file-3" src="nagranie3.mp3" preload="auto"></audio>
     
     <script>
         // ================================
-        // PROSTE ROZWIĄZANIE BEZ SUPABASE
+        // PEŁNY SYSTEM TESTU - 15 ZADAŃ
         // ================================
         
         // Zmienne globalne
         let currentTask = 0;
         let studentName = '';
-        const totalTasks = 5;
+        const totalTasks = 15;
         const audioCounters = [3, 3, 3];
         
-        // Dane odpowiedzi
+        // Dane odpowiedzi dla wszystkich 15 zadań
         let answers = {
             student_name: '',
-            task_1: {},
-            task_2: {},
-            task_3: {},
-            task_4: {},
-            task_5: {}
+            timestamp: '',
+            task_1: {}, task_2: {}, task_3: {}, task_4: {}, task_5: {},
+            task_6: {}, task_7: {}, task_8: {}, task_9: {}, task_10: {},
+            task_11: {}, task_12: {}, task_13: {}, task_14: {}, task_15: {}
         };
         
         // Inicjalizacja po załadowaniu strony
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('Strona załadowana - test diagnozy');
+            console.log('Strona załadowana - pełny test diagnozy (15 zadań)');
             
             // Inicjalizacja paska postępu
             initProgressBar();
@@ -815,7 +1317,7 @@
             studentDot.onclick = () => navigateToTask(0);
             progressBar.appendChild(studentDot);
             
-            // Dodaj punkty dla zadań
+            // Dodaj punkty dla zadań (1-15)
             for (let i = 1; i <= totalTasks; i++) {
                 const dot = document.createElement('div');
                 dot.className = 'progress-dot';
@@ -834,7 +1336,7 @@
             progressBar.appendChild(saveButton);
         }
         
-        // Rozpocznij test - TERAZ DZIAŁA POPRAWNIE!
+        // Rozpocznij test
         function startTest() {
             console.log('Przycisk "Rozpocznij test" kliknięty!');
             
@@ -842,11 +1344,9 @@
             const errorElement = document.getElementById('student-error');
             
             if (!nameInput.value.trim()) {
-                // Pokaż błąd
                 if (errorElement) {
                     errorElement.style.display = 'block';
                     errorElement.textContent = 'Proszę podać imię i nazwisko';
-                    // Ukryj błąd po 3 sekundach
                     setTimeout(() => {
                         errorElement.style.display = 'none';
                     }, 3000);
@@ -855,13 +1355,13 @@
                 return;
             }
             
-            // Ukryj błąd jeśli był pokazany
             if (errorElement) {
                 errorElement.style.display = 'none';
             }
             
             studentName = nameInput.value.trim();
             answers.student_name = studentName;
+            answers.timestamp = new Date().toISOString();
             
             // Zapisz w localStorage
             localStorage.setItem('diagnoza_student_name', studentName);
@@ -998,8 +1498,15 @@
         
         // Pobierz liczbę pytań w zadaniu
         function getQuestionCountForTask(taskNumber) {
-            const counts = {1: 5, 2: 5, 3: 5, 4: 5, 5: 5};
-            return counts[taskNumber] || 0;
+            const counts = {
+                1: 5, 2: 5, 3: 5, 4: 5, 5: 5,
+                6: 7,  // Zadanie 6 ma 7 pól (ale 5 pytań)
+                7: 5, 8: 5, 9: 5, 10: 5,
+                11: 7, // Zadanie 11 ma 7 pól (ale 5 pytań)
+                12: 7, // Zadanie 12 ma 7 pól (ale 5 pytań)
+                13: 5, 14: 5, 15: 5
+            };
+            return counts[taskNumber] || 5; // Domyślnie 5
         }
         
         // Zapisz odpowiedzi z aktualnego zadania
@@ -1034,18 +1541,11 @@
             updateSaveButton();
         }
         
-        // Odtwarzanie nagrań z fallback
+        // Odtwarzanie nagrań - TU PODMIENIASZ NA SWOJE PLIKI
         function playAudio(audioNumber) {
             const audioElement = document.getElementById(`audio-file-${audioNumber}`);
             const counterElement = document.getElementById(`audio-counter-${audioNumber}`);
             const playButton = document.getElementById(`play-audio-${audioNumber}`);
-            
-            // Testowe nagrania online
-            const audioFiles = {
-                1: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
-                2: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
-                3: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3'
-            };
             
             if (audioCounters[audioNumber - 1] <= 0) {
                 playButton.disabled = true;
@@ -1053,22 +1553,15 @@
                 return;
             }
             
-            if (!audioElement.src) {
-                audioElement.src = audioFiles[audioNumber];
+            // Sprawdź czy audio ma źródło
+            if (!audioElement.src || audioElement.src.includes('#')) {
+                alert(`Brak pliku nagranie${audioNumber}.mp3! Wgraj prawdziwe nagranie do folderu.`);
+                return;
             }
             
             audioElement.play().catch(e => {
                 console.log('Błąd odtwarzania audio:', e);
-                // Symuluj odtwarzanie dla testów
-                audioCounters[audioNumber - 1]--;
-                counterElement.textContent = audioCounters[audioNumber - 1];
-                
-                if (audioCounters[audioNumber - 1] <= 0) {
-                    playButton.disabled = true;
-                    playButton.innerHTML = '<i class="fas fa-ban"></i> Limit odtworzeń wyczerpany';
-                }
-                
-                alert('Nagranie odtworzone (symulacja). W prawdziwym teście usłyszysz pytania.');
+                alert('Nie można odtworzyć nagrania. Sprawdź czy plik istnieje i ma format MP3.');
             });
             
             // Dla prawdziwego odtwarzania
@@ -1083,9 +1576,9 @@
             };
         }
         
-        // Zapisz wszystkie odpowiedzi (bez Supabase - tylko localStorage)
+        // Zapisz wszystkie odpowiedzi
         function saveAllAnswers() {
-            console.log('Zapisywanie odpowiedzi...');
+            console.log('Zapisywanie wszystkich odpowiedzi...');
             
             // Pokaż ładowanie
             document.getElementById('loading').style.display = 'block';
@@ -1101,20 +1594,40 @@
                 // Zaktualizuj przycisk
                 updateSaveButton();
                 
-                console.log('Odpowiedzi zapisane:', answers);
+                console.log('Wszystkie odpowiedzi zapisane:', answers);
                 
-                // Wyświetl podsumowanie w konsoli
-                console.log('=== PODSUMOWANIE TESTU ===');
-                console.log('Uczeń:', answers.student_name);
-                console.log('Odpowiedzi:', answers);
+                // Wyświetl podsumowanie
+                const completed = checkAllTasksCompleted();
+                if (completed) {
+                    console.log('=== TEST ZAKOŃCZONY POMYŚLNIE ===');
+                    console.log('Uczeń:', answers.student_name);
+                    console.log('Data:', new Date(answers.timestamp).toLocaleString());
+                    console.log('Wszystkie zadania wypełnione: TAK');
+                }
                 
             }, 1000);
+        }
+        
+        // Eksportuj odpowiedzi (dla nauczyciela)
+        function exportAnswers() {
+            const dataStr = JSON.stringify(answers, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = `odpowiedzi_${answers.student_name}_${new Date().toISOString().slice(0,10)}.json`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+            
+            alert('Odpowiedzi wyeksportowane do pliku JSON!');
         }
         
         // Zapisz odpowiedzi do localStorage
         function saveToLocalStorage() {
             try {
-                localStorage.setItem('diagnoza_answers', JSON.stringify(answers));
+                localStorage.setItem('diagnoza_full_answers', JSON.stringify(answers));
+                localStorage.setItem('diagnoza_last_save', new Date().toISOString());
             } catch (e) {
                 console.log('Błąd zapisu do localStorage:', e);
             }
@@ -1124,7 +1637,7 @@
         function restoreFromLocalStorage() {
             try {
                 const savedName = localStorage.getItem('diagnoza_student_name');
-                const savedAnswers = localStorage.getItem('diagnoza_answers');
+                const savedAnswers = localStorage.getItem('diagnoza_full_answers');
                 
                 if (savedName) {
                     document.getElementById('student-name').value = savedName;
@@ -1164,7 +1677,7 @@
             }
         }
         
-        // Ustaw nasłuchiwanie zmian odpowiedzi
+        // Ustaw nasłuchiwanie zmian odpowiedzi dla wszystkich zadań
         function setupAnswerListeners() {
             for (let taskNum = 1; taskNum <= totalTasks; taskNum++) {
                 const questionCount = getQuestionCountForTask(taskNum);
@@ -1189,11 +1702,7 @@
         
         // Funkcja do pobrania wszystkich odpowiedzi (dla nauczyciela)
         function getAllAnswers() {
-            return {
-                student: answers.student_name,
-                answers: answers,
-                timestamp: new Date().toISOString()
-            };
+            return answers;
         }
     </script>
 </body>
