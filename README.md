@@ -321,6 +321,10 @@
             background-color: var(--dark-green);
         }
         
+        .start-button:active {
+            transform: scale(0.98);
+        }
+        
         .completion-message {
             text-align: center;
             padding: 40px;
@@ -407,7 +411,7 @@
                     <h2><i class="fas fa-user-graduate"></i> Dane ucznia</h2>
                     <p>Przed rozpoczęciem testu podaj swoje imię i nazwisko:</p>
                     <input type="text" id="student-name" placeholder="Imię i nazwisko" required>
-                    <button id="start-test" class="start-button">
+                    <button id="start-test" class="start-button" type="button">
                         <i class="fas fa-play-circle"></i> Rozpocznij test
                     </button>
                     <div id="student-error" class="error-message">Proszę podać imię i nazwisko</div>
@@ -779,22 +783,39 @@
         
         // Inicjalizacja po załadowaniu strony
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM załadowany');
+            
             // Inicjalizacja paska postępu
             initProgressBar();
             
-            // Obsługa rozpoczęcia testu
-            document.getElementById('start-test').addEventListener('click', startTest);
+            // Obsługa rozpoczęcia testu - POPRAWIONE: dodajemy event listener bezpośrednio
+            const startButton = document.getElementById('start-test');
+            console.log('Przycisk start:', startButton);
+            
+            if (startButton) {
+                startButton.addEventListener('click', function(event) {
+                    console.log('Kliknięto przycisk Rozpocznij test');
+                    event.preventDefault();
+                    startTest();
+                });
+            } else {
+                console.error('Nie znaleziono przycisku start-test');
+            }
             
             // Obsługa zapisywania odpowiedzi przy zmianie
             setupAnswerListeners();
             
             // Przywróć zapisane odpowiedzi z localStorage jeśli istnieją
             restoreFromLocalStorage();
+            
+            // Test: włącz autofocus na polu imienia
+            document.getElementById('student-name').focus();
         });
         
         // Inicjalizacja paska postępu
         function initProgressBar() {
             const progressBar = document.getElementById('progress-bar');
+            if (!progressBar) return;
             
             // Dodaj punkt dla danych ucznia
             const studentDot = document.createElement('div');
@@ -825,25 +846,44 @@
         
         // Rozpocznij test
         function startTest() {
-            const nameInput = document.getElementById('student-name').value.trim();
+            console.log('Funkcja startTest uruchomiona');
             
+            const nameInput = document.getElementById('student-name');
             if (!nameInput) {
-                document.getElementById('student-error').style.display = 'block';
+                console.error('Nie znaleziono pola student-name');
                 return;
             }
             
-            studentName = nameInput;
+            const nameValue = nameInput.value.trim();
+            console.log('Wprowadzone imię:', nameValue);
+            
+            if (!nameValue) {
+                const errorElement = document.getElementById('student-error');
+                if (errorElement) {
+                    errorElement.style.display = 'block';
+                    // Ukryj błąd po 3 sekundach
+                    setTimeout(() => {
+                        errorElement.style.display = 'none';
+                    }, 3000);
+                }
+                return;
+            }
+            
+            studentName = nameValue;
             answers.student_name = studentName;
             
             // Zapisz w localStorage
             localStorage.setItem('diagnoza_student_name', studentName);
             
+            console.log('Przechodzę do zadania 1');
             // Przejdź do pierwszego zadania
             navigateToTask(1);
         }
         
         // Nawigacja między zadaniami
         function navigateToTask(taskNumber) {
+            console.log('Przechodzę do zadania:', taskNumber);
+            
             // Zapisz aktualne odpowiedzi przed przejściem
             saveCurrentTaskAnswers();
             
@@ -856,7 +896,12 @@
             if (taskNumber === 0) {
                 document.getElementById('student-section').classList.add('active');
             } else if (taskNumber <= totalTasks) {
-                document.getElementById(`task-${taskNumber}`).classList.add('active');
+                const taskElement = document.getElementById(`task-${taskNumber}`);
+                if (taskElement) {
+                    taskElement.classList.add('active');
+                } else {
+                    console.error(`Nie znaleziono elementu task-${taskNumber}`);
+                }
             } else {
                 document.getElementById('completion-section').classList.add('active');
             }
@@ -919,6 +964,8 @@
         // Aktualizuj przycisk zapisz/dalej
         function updateSaveButton() {
             const saveButton = document.getElementById('save-progress-btn');
+            if (!saveButton) return;
+            
             const allCompleted = checkAllTasksCompleted();
             
             if (allCompleted && currentTask > totalTasks) {
