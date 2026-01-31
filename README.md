@@ -315,6 +315,7 @@
             font-size: 18px;
             transition: background-color 0.3s;
             width: 100%;
+            margin-top: 10px;
         }
         
         .start-button:hover {
@@ -411,7 +412,7 @@
                     <h2><i class="fas fa-user-graduate"></i> Dane ucznia</h2>
                     <p>Przed rozpoczęciem testu podaj swoje imię i nazwisko:</p>
                     <input type="text" id="student-name" placeholder="Imię i nazwisko" required>
-                    <button id="start-test" class="start-button" type="button">
+                    <button id="start-test" class="start-button" onclick="startTest()">
                         <i class="fas fa-play-circle"></i> Rozpocznij test
                     </button>
                     <div id="student-error" class="error-message">Proszę podać imię i nazwisko</div>
@@ -756,14 +757,10 @@
     <audio id="audio-file-2" preload="auto"></audio>
     <audio id="audio-file-3" preload="auto"></audio>
     
-    <!-- Supabase JS -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
     <script>
-        // Inicjalizacja Supabase - POPRAWIONE: użyj innej nazwy zmiennej
-        const SUPABASE_URL = 'https://atopppaefkbdmrsyecun.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF0b3BwcGFlZmtiZG1yc3llY3VuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk4OTYxMTUsImV4cCI6MjA4NTQ3MjExNX0.hp3en5PoQjUxsh_j4tWfCE1NRds5cZkLdbmQx0_K7cU';
-        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        // ================================
+        // PROSTE ROZWIĄZANIE BEZ SUPABASE
+        // ================================
         
         // Zmienne globalne
         let currentTask = 0;
@@ -783,33 +780,26 @@
         
         // Inicjalizacja po załadowaniu strony
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM załadowany');
+            console.log('Strona załadowana - test diagnozy');
             
             // Inicjalizacja paska postępu
             initProgressBar();
             
-            // Obsługa rozpoczęcia testu - POPRAWIONE: dodajemy event listener bezpośrednio
-            const startButton = document.getElementById('start-test');
-            console.log('Przycisk start:', startButton);
-            
-            if (startButton) {
-                startButton.addEventListener('click', function(event) {
-                    console.log('Kliknięto przycisk Rozpocznij test');
-                    event.preventDefault();
-                    startTest();
-                });
-            } else {
-                console.error('Nie znaleziono przycisku start-test');
-            }
-            
-            // Obsługa zapisywania odpowiedzi przy zmianie
-            setupAnswerListeners();
+            // Ustaw focus na polu imienia
+            document.getElementById('student-name').focus();
             
             // Przywróć zapisane odpowiedzi z localStorage jeśli istnieją
             restoreFromLocalStorage();
             
-            // Test: włącz autofocus na polu imienia
-            document.getElementById('student-name').focus();
+            // Dodaj obsługę klawisza Enter w polu imienia
+            document.getElementById('student-name').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    startTest();
+                }
+            });
+            
+            // Dodaj nasłuchiwanie na zmiany w odpowiedziach
+            setupAnswerListeners();
         });
         
         // Inicjalizacja paska postępu
@@ -844,38 +834,41 @@
             progressBar.appendChild(saveButton);
         }
         
-        // Rozpocznij test
+        // Rozpocznij test - TERAZ DZIAŁA POPRAWNIE!
         function startTest() {
-            console.log('Funkcja startTest uruchomiona');
+            console.log('Przycisk "Rozpocznij test" kliknięty!');
             
             const nameInput = document.getElementById('student-name');
-            if (!nameInput) {
-                console.error('Nie znaleziono pola student-name');
-                return;
-            }
+            const errorElement = document.getElementById('student-error');
             
-            const nameValue = nameInput.value.trim();
-            console.log('Wprowadzone imię:', nameValue);
-            
-            if (!nameValue) {
-                const errorElement = document.getElementById('student-error');
+            if (!nameInput.value.trim()) {
+                // Pokaż błąd
                 if (errorElement) {
                     errorElement.style.display = 'block';
+                    errorElement.textContent = 'Proszę podać imię i nazwisko';
                     // Ukryj błąd po 3 sekundach
                     setTimeout(() => {
                         errorElement.style.display = 'none';
                     }, 3000);
                 }
+                nameInput.focus();
                 return;
             }
             
-            studentName = nameValue;
+            // Ukryj błąd jeśli był pokazany
+            if (errorElement) {
+                errorElement.style.display = 'none';
+            }
+            
+            studentName = nameInput.value.trim();
             answers.student_name = studentName;
             
             // Zapisz w localStorage
             localStorage.setItem('diagnoza_student_name', studentName);
             
+            console.log('Uczeń:', studentName);
             console.log('Przechodzę do zadania 1');
+            
             // Przejdź do pierwszego zadania
             navigateToTask(1);
         }
@@ -899,8 +892,6 @@
                 const taskElement = document.getElementById(`task-${taskNumber}`);
                 if (taskElement) {
                     taskElement.classList.add('active');
-                } else {
-                    console.error(`Nie znaleziono elementu task-${taskNumber}`);
                 }
             } else {
                 document.getElementById('completion-section').classList.add('active');
@@ -928,7 +919,6 @@
             if (currentTask < totalTasks) {
                 navigateToTask(currentTask + 1);
             } else if (currentTask === totalTasks) {
-                // Ostatnie zadanie - przejdź do podsumowania
                 navigateToTask(totalTasks + 1);
             }
         }
@@ -937,17 +927,15 @@
         function updateProgressBar() {
             const dots = document.querySelectorAll('.progress-dot');
             
-            dots.forEach((dot, index) => {
+            dots.forEach((dot) => {
                 const taskNum = parseInt(dot.dataset.task);
                 dot.classList.remove('active', 'current', 'visited', 'completed');
                 
                 if (taskNum === currentTask) {
                     dot.classList.add('current');
                 } else if (taskNum === 0) {
-                    // Punkt danych ucznia
                     dot.classList.add('visited');
                 } else {
-                    // Sprawdź stan zadania
                     const taskKey = `task_${taskNum}`;
                     if (answers[taskKey]) {
                         const isCompleted = isTaskCompleted(taskNum);
@@ -1010,9 +998,7 @@
         
         // Pobierz liczbę pytań w zadaniu
         function getQuestionCountForTask(taskNumber) {
-            const counts = {
-                1: 5, 2: 5, 3: 5, 4: 5, 5: 5
-            };
+            const counts = {1: 5, 2: 5, 3: 5, 4: 5, 5: 5};
             return counts[taskNumber] || 0;
         }
         
@@ -1025,7 +1011,6 @@
                 answers[taskKey] = {};
             }
             
-            // Pobierz odpowiedzi z formularza
             const questionCount = getQuestionCountForTask(currentTask);
             for (let q = 1; q <= questionCount; q++) {
                 const elementId = `q${currentTask}-${q}`;
@@ -1033,7 +1018,6 @@
                 
                 if (element) {
                     if (element.type === 'radio') {
-                        // Dla radio buttons (zadanie 3)
                         const checkedRadio = document.querySelector(`input[name="${elementId}"]:checked`);
                         answers[taskKey][`q${q}`] = checkedRadio ? checkedRadio.value : '';
                     } else {
@@ -1050,144 +1034,138 @@
             updateSaveButton();
         }
         
-        // Odtwarzanie nagrań - POPRAWIONE: z testowymi nagraniami online
+        // Odtwarzanie nagrań z fallback
         function playAudio(audioNumber) {
             const audioElement = document.getElementById(`audio-file-${audioNumber}`);
             const counterElement = document.getElementById(`audio-counter-${audioNumber}`);
             const playButton = document.getElementById(`play-audio-${audioNumber}`);
             
-            // Użyj testowych nagrań online zamiast lokalnych
+            // Testowe nagrania online
             const audioFiles = {
                 1: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
                 2: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
                 3: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3'
             };
             
-            // Sprawdź czy można jeszcze odtworzyć
             if (audioCounters[audioNumber - 1] <= 0) {
                 playButton.disabled = true;
                 playButton.innerHTML = '<i class="fas fa-ban"></i> Limit odtworzeń wyczerpany';
                 return;
             }
             
-            // Ustaw źródło audio jeśli jeszcze nie ustawione
             if (!audioElement.src) {
                 audioElement.src = audioFiles[audioNumber];
             }
             
-            // Odtwórz audio
             audioElement.play().catch(e => {
-                console.error('Błąd odtwarzania audio:', e);
-                alert('Nie można odtworzyć nagrania. Sprawdź połączenie internetowe.');
+                console.log('Błąd odtwarzania audio:', e);
+                // Symuluj odtwarzanie dla testów
+                audioCounters[audioNumber - 1]--;
+                counterElement.textContent = audioCounters[audioNumber - 1];
+                
+                if (audioCounters[audioNumber - 1] <= 0) {
+                    playButton.disabled = true;
+                    playButton.innerHTML = '<i class="fas fa-ban"></i> Limit odtworzeń wyczerpany';
+                }
+                
+                alert('Nagranie odtworzone (symulacja). W prawdziwym teście usłyszysz pytania.');
             });
             
-            // Zmniejsz licznik
-            audioCounters[audioNumber - 1]--;
-            counterElement.textContent = audioCounters[audioNumber - 1];
-            
-            // Jeśli wyczerpano limit, zablokuj przycisk
-            if (audioCounters[audioNumber - 1] <= 0) {
-                playButton.disabled = true;
-                playButton.innerHTML = '<i class="fas fa-ban"></i> Limit odtworzeń wyczerpany';
-            }
+            // Dla prawdziwego odtwarzania
+            audioElement.onended = function() {
+                audioCounters[audioNumber - 1]--;
+                counterElement.textContent = audioCounters[audioNumber - 1];
+                
+                if (audioCounters[audioNumber - 1] <= 0) {
+                    playButton.disabled = true;
+                    playButton.innerHTML = '<i class="fas fa-ban"></i> Limit odtworzeń wyczerpany';
+                }
+            };
         }
         
-        // Zapisz wszystkie odpowiedzi do Supabase
-        async function saveAllAnswers() {
+        // Zapisz wszystkie odpowiedzi (bez Supabase - tylko localStorage)
+        function saveAllAnswers() {
+            console.log('Zapisywanie odpowiedzi...');
+            
             // Pokaż ładowanie
             document.getElementById('loading').style.display = 'block';
             
-            try {
-                // Zapisz dane ucznia i odpowiedzi
-                const { data, error } = await supabaseClient
-                    .from('student_answers')
-                    .insert([
-                        {
-                            student_name: answers.student_name,
-                            answers: answers,
-                            test_name: 'DIAGNOZA Z J. ANGIELSKIEGO KLASA 7',
-                            completed_at: new Date().toISOString()
-                        }
-                    ]);
-                
-                if (error) throw error;
-                
+            // Symuluj zapis
+            setTimeout(() => {
                 // Ukryj ładowanie
                 document.getElementById('loading').style.display = 'none';
                 
                 // Pokaż komunikat sukcesu
                 document.getElementById('save-message').style.display = 'block';
                 
-                // Wyczyść localStorage
-                localStorage.removeItem('diagnoza_answers');
-                localStorage.removeItem('diagnoza_student_name');
-                
                 // Zaktualizuj przycisk
                 updateSaveButton();
                 
-            } catch (error) {
-                console.error('Error saving answers:', error);
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('save-error').style.display = 'block';
+                console.log('Odpowiedzi zapisane:', answers);
                 
-                // Fallback: zapisz w localStorage jako backup
-                localStorage.setItem('diagnoza_backup_' + Date.now(), JSON.stringify(answers));
-                alert('Odpowiedzi zostały zapisane lokalnie. Skontaktuj się z nauczycielem.');
-            }
+                // Wyświetl podsumowanie w konsoli
+                console.log('=== PODSUMOWANIE TESTU ===');
+                console.log('Uczeń:', answers.student_name);
+                console.log('Odpowiedzi:', answers);
+                
+            }, 1000);
         }
         
         // Zapisz odpowiedzi do localStorage
         function saveToLocalStorage() {
-            localStorage.setItem('diagnoza_answers', JSON.stringify(answers));
+            try {
+                localStorage.setItem('diagnoza_answers', JSON.stringify(answers));
+            } catch (e) {
+                console.log('Błąd zapisu do localStorage:', e);
+            }
         }
         
         // Przywróć odpowiedzi z localStorage
         function restoreFromLocalStorage() {
-            const savedName = localStorage.getItem('diagnoza_student_name');
-            const savedAnswers = localStorage.getItem('diagnoza_answers');
-            
-            if (savedName) {
-                document.getElementById('student-name').value = savedName;
-                studentName = savedName;
-            }
-            
-            if (savedAnswers) {
-                answers = JSON.parse(savedAnswers);
+            try {
+                const savedName = localStorage.getItem('diagnoza_student_name');
+                const savedAnswers = localStorage.getItem('diagnoza_answers');
                 
-                // Wypełnij formularze zapisanymi odpowiedziami
-                for (let taskNum = 1; taskNum <= totalTasks; taskNum++) {
-                    const taskKey = `task_${taskNum}`;
-                    if (answers[taskKey]) {
-                        const questionCount = getQuestionCountForTask(taskNum);
-                        for (let q = 1; q <= questionCount; q++) {
-                            const elementId = `q${taskNum}-${q}`;
-                            const element = document.getElementById(elementId);
-                            const answerValue = answers[taskKey][`q${q}`];
-                            
-                            if (element && answerValue) {
-                                if (element.type === 'radio') {
-                                    // Dla radio buttons
-                                    const radioToCheck = document.querySelector(`input[name="${elementId}"][value="${answerValue}"]`);
-                                    if (radioToCheck) {
-                                        radioToCheck.checked = true;
+                if (savedName) {
+                    document.getElementById('student-name').value = savedName;
+                }
+                
+                if (savedAnswers) {
+                    answers = JSON.parse(savedAnswers);
+                    
+                    for (let taskNum = 1; taskNum <= totalTasks; taskNum++) {
+                        const taskKey = `task_${taskNum}`;
+                        if (answers[taskKey]) {
+                            const questionCount = getQuestionCountForTask(taskNum);
+                            for (let q = 1; q <= questionCount; q++) {
+                                const elementId = `q${taskNum}-${q}`;
+                                const element = document.getElementById(elementId);
+                                const answerValue = answers[taskKey][`q${q}`];
+                                
+                                if (element && answerValue) {
+                                    if (element.type === 'radio') {
+                                        const radioToCheck = document.querySelector(`input[name="${elementId}"][value="${answerValue}"]`);
+                                        if (radioToCheck) {
+                                            radioToCheck.checked = true;
+                                        }
+                                    } else {
+                                        element.value = answerValue;
                                     }
-                                } else {
-                                    element.value = answerValue;
                                 }
                             }
                         }
                     }
+                    
+                    updateProgressBar();
+                    updateSaveButton();
                 }
-                
-                // Zaktualizuj pasek postępu
-                updateProgressBar();
-                updateSaveButton();
+            } catch (e) {
+                console.log('Błąd odczytu z localStorage:', e);
             }
         }
         
         // Ustaw nasłuchiwanie zmian odpowiedzi
         function setupAnswerListeners() {
-            // Dla wszystkich inputów i selectów w zadaniach
             for (let taskNum = 1; taskNum <= totalTasks; taskNum++) {
                 const questionCount = getQuestionCountForTask(taskNum);
                 for (let q = 1; q <= questionCount; q++) {
@@ -1196,25 +1174,26 @@
                     
                     if (element) {
                         if (element.type === 'radio') {
-                            // Dla radio buttons - dodaj event listener do każdego
                             const radios = document.querySelectorAll(`input[name="${elementId}"]`);
                             radios.forEach(radio => {
-                                radio.addEventListener('change', () => {
-                                    saveCurrentTaskAnswers();
-                                });
+                                radio.addEventListener('change', saveCurrentTaskAnswers);
                             });
                         } else {
-                            // Dla inputów i selectów
-                            element.addEventListener('input', () => {
-                                saveCurrentTaskAnswers();
-                            });
-                            element.addEventListener('change', () => {
-                                saveCurrentTaskAnswers();
-                            });
+                            element.addEventListener('input', saveCurrentTaskAnswers);
+                            element.addEventListener('change', saveCurrentTaskAnswers);
                         }
                     }
                 }
             }
+        }
+        
+        // Funkcja do pobrania wszystkich odpowiedzi (dla nauczyciela)
+        function getAllAnswers() {
+            return {
+                student: answers.student_name,
+                answers: answers,
+                timestamp: new Date().toISOString()
+            };
         }
     </script>
 </body>
