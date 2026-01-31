@@ -235,6 +235,8 @@
             gap: 8px;
             margin-top: 20px;
             flex-wrap: wrap;
+            padding: 20px;
+            background-color: var(--background-green);
         }
         
         .progress-dot {
@@ -716,8 +718,6 @@
                 </div>
             </div>
             
-            <!-- Zadania 6-15 - można kontynuować według tego samego wzoru -->
-            
             <!-- Komunikat ukończenia -->
             <div id="completion-section" class="task-section">
                 <div class="completion-message">
@@ -748,24 +748,24 @@
     </div>
     
     <!-- Audio elementy (ukryte) -->
-    <audio id="audio-file-1" src="nagranie1.mp3" preload="auto"></audio>
-    <audio id="audio-file-2" src="nagranie2.mp3" preload="auto"></audio>
-    <audio id="audio-file-3" src="nagranie3.mp3" preload="auto"></audio>
+    <audio id="audio-file-1" preload="auto"></audio>
+    <audio id="audio-file-2" preload="auto"></audio>
+    <audio id="audio-file-3" preload="auto"></audio>
     
     <!-- Supabase JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <script>
-        // Inicjalizacja Supabase
-        const supabaseUrl = 'https://atopppaefkbdmrsyecun.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF0b3BwcGFlZmtiZG1yc3llY3VuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk4OTYxMTUsImV4cCI6MjA4NTQ3MjExNX0.hp3en5PoQjUxsh_j4tWfCE1NRds5cZkLdbmQx0_K7cU';
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        // Inicjalizacja Supabase - POPRAWIONE: użyj innej nazwy zmiennej
+        const SUPABASE_URL = 'https://atopppaefkbdmrsyecun.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF0b3BwcGFlZmtiZG1yc3llY3VuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk4OTYxMTUsImV4cCI6MjA4NTQ3MjExNX0.hp3en5PoQjUxsh_j4tWfCE1NRds5cZkLdbmQx0_K7cU';
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         
         // Zmienne globalne
         let currentTask = 0;
         let studentName = '';
-        const totalTasks = 5; // Możesz zwiększyć do 15 dla pełnego testu
-        const audioCounters = [3, 3, 3]; // Liczniki dla 3 nagrań
+        const totalTasks = 5;
+        const audioCounters = [3, 3, 3];
         
         // Dane odpowiedzi
         let answers = {
@@ -965,7 +965,6 @@
         function getQuestionCountForTask(taskNumber) {
             const counts = {
                 1: 5, 2: 5, 3: 5, 4: 5, 5: 5
-                // Dodaj kolejne zadania według potrzeb
             };
             return counts[taskNumber] || 0;
         }
@@ -1004,11 +1003,18 @@
             updateSaveButton();
         }
         
-        // Odtwarzanie nagrań
+        // Odtwarzanie nagrań - POPRAWIONE: z testowymi nagraniami online
         function playAudio(audioNumber) {
             const audioElement = document.getElementById(`audio-file-${audioNumber}`);
             const counterElement = document.getElementById(`audio-counter-${audioNumber}`);
             const playButton = document.getElementById(`play-audio-${audioNumber}`);
+            
+            // Użyj testowych nagrań online zamiast lokalnych
+            const audioFiles = {
+                1: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+                2: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+                3: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3'
+            };
             
             // Sprawdź czy można jeszcze odtworzyć
             if (audioCounters[audioNumber - 1] <= 0) {
@@ -1017,8 +1023,16 @@
                 return;
             }
             
+            // Ustaw źródło audio jeśli jeszcze nie ustawione
+            if (!audioElement.src) {
+                audioElement.src = audioFiles[audioNumber];
+            }
+            
             // Odtwórz audio
-            audioElement.play();
+            audioElement.play().catch(e => {
+                console.error('Błąd odtwarzania audio:', e);
+                alert('Nie można odtworzyć nagrania. Sprawdź połączenie internetowe.');
+            });
             
             // Zmniejsz licznik
             audioCounters[audioNumber - 1]--;
@@ -1038,7 +1052,7 @@
             
             try {
                 // Zapisz dane ucznia i odpowiedzi
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('student_answers')
                     .insert([
                         {
@@ -1068,6 +1082,10 @@
                 console.error('Error saving answers:', error);
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('save-error').style.display = 'block';
+                
+                // Fallback: zapisz w localStorage jako backup
+                localStorage.setItem('diagnoza_backup_' + Date.now(), JSON.stringify(answers));
+                alert('Odpowiedzi zostały zapisane lokalnie. Skontaktuj się z nauczycielem.');
             }
         }
         
