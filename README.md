@@ -1231,13 +1231,13 @@
                     <p>Twoje odpowiedzi zostały zapisane i oczekują na ocenę przez nauczyciela.</p>
                     <p>Łączna liczba punktów: <strong>75</strong></p>
                     <div id="save-message" class="success-message" style="display: none;">
-                        <i class="fas fa-check"></i> Odpowiedzi zostały pomyślnie zapisane.
+                        <i class="fas fa-check"></i> Odpowiedzi zostały pomyślnie zapisane w bazie danych.
                     </div>
                     <div id="save-error" class="error-message" style="display: none;">
                         <i class="fas fa-exclamation-triangle"></i> Wystąpił błąd podczas zapisywania odpowiedzi.
                     </div>
                     <button class="nav-button" onclick="exportAnswers()" style="margin-top: 20px;">
-                        <i class="fas fa-download"></i> Eksportuj odpowiedzi
+                        <i class="fas fa-download"></i> Eksportuj odpowiedzi (backup)
                     </button>
                 </div>
             </div>
@@ -1245,7 +1245,7 @@
             <!-- Loading indicator -->
             <div id="loading" class="loading">
                 <i class="fas fa-spinner fa-spin"></i>
-                <p>Zapisywanie odpowiedzi...</p>
+                <p>Zapisywanie odpowiedzi do bazy danych...</p>
             </div>
         </div>
         
@@ -1255,17 +1255,34 @@
         </div>
     </div>
     
-    <!-- Audio elementy (ukryte) - TU PODMIENISZ NA SWOJE NAGRANIA -->
+    <!-- Audio elementy (lokalne pliki) -->
     <audio id="audio-file-1" src="nagranie1.mp3" preload="auto"></audio>
     <audio id="audio-file-2" src="nagranie2.mp3" preload="auto"></audio>
     <audio id="audio-file-3" src="nagranie3.mp3" preload="auto"></audio>
     
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
     <script>
         // ================================
-        // PEŁNY SYSTEM TESTU - 15 ZADAŃ
+        // INICJALIZACJA SUPABASE
         // ================================
+        const SUPABASE_URL = 'https://atopppaefkbdmrsyecun.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF0b3BwcGFlZmtiZG1yc3llY3VuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk4OTYxMTUsImV4cCI6MjA4NTQ3MjExNX0.hp3en5PoQjUxsh_j4tWfCE1NRds5cZkLdbmQx0_K7cU';
         
-        // Zmienne globalne
+        // Inicjalizacja Supabase
+        let supabaseClient;
+        try {
+            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            console.log('Supabase zainicjalizowany pomyślnie');
+        } catch (error) {
+            console.error('Błąd inicjalizacji Supabase:', error);
+            // Kontynuuj bez Supabase - użyjemy localStorage jako fallback
+        }
+        
+        // ================================
+        // ZMIENNE GLOBALNE
+        // ================================
         let currentTask = 0;
         let studentName = '';
         const totalTasks = 15;
@@ -1275,6 +1292,9 @@
         let answers = {
             student_name: '',
             timestamp: '',
+            test_name: 'DIAGNOZA Z J. ANGIELSKIEGO KLASA 7',
+            test_code: 'DIAG-ENG-7-2024',
+            total_points: 75,
             task_1: {}, task_2: {}, task_3: {}, task_4: {}, task_5: {},
             task_6: {}, task_7: {}, task_8: {}, task_9: {}, task_10: {},
             task_11: {}, task_12: {}, task_13: {}, task_14: {}, task_15: {}
@@ -1332,7 +1352,7 @@
             saveButton.id = 'save-progress-btn';
             saveButton.className = 'nav-button save-button';
             saveButton.textContent = 'Zapisz';
-            saveButton.onclick = saveAllAnswers;
+            saveButton.onclick = saveAllAnswersToSupabase;
             progressBar.appendChild(saveButton);
         }
         
@@ -1467,8 +1487,8 @@
                     }
                 };
             } else {
-                saveButton.textContent = 'Zapisz';
-                saveButton.onclick = saveAllAnswers;
+                saveButton.textContent = 'Zapisz do bazy';
+                saveButton.onclick = saveAllAnswersToSupabase;
             }
         }
         
@@ -1541,7 +1561,7 @@
             updateSaveButton();
         }
         
-        // Odtwarzanie nagrań - TU PODMIENIASZ NA SWOJE PLIKI
+        // Odtwarzanie nagrań (lokalne pliki)
         function playAudio(audioNumber) {
             const audioElement = document.getElementById(`audio-file-${audioNumber}`);
             const counterElement = document.getElementById(`audio-counter-${audioNumber}`);
@@ -1553,15 +1573,9 @@
                 return;
             }
             
-            // Sprawdź czy audio ma źródło
-            if (!audioElement.src || audioElement.src.includes('#')) {
-                alert(`Brak pliku nagranie${audioNumber}.mp3! Wgraj prawdziwe nagranie do folderu.`);
-                return;
-            }
-            
             audioElement.play().catch(e => {
                 console.log('Błąd odtwarzania audio:', e);
-                alert('Nie można odtworzyć nagrania. Sprawdź czy plik istnieje i ma format MP3.');
+                alert('Nie można odtworzyć nagrania. Sprawdź czy plik nagranie' + audioNumber + '.mp3 istnieje w folderze.');
             });
             
             // Dla prawdziwego odtwarzania
@@ -1576,39 +1590,89 @@
             };
         }
         
-        // Zapisz wszystkie odpowiedzi
-        function saveAllAnswers() {
-            console.log('Zapisywanie wszystkich odpowiedzi...');
+        // ZAPISZ WSZYSTKIE ODPOWIEDZI DO SUPABASE
+        async function saveAllAnswersToSupabase() {
+            console.log('Zapisywanie odpowiedzi do Supabase...');
             
             // Pokaż ładowanie
             document.getElementById('loading').style.display = 'block';
+            document.getElementById('save-message').style.display = 'none';
+            document.getElementById('save-error').style.display = 'none';
             
-            // Symuluj zapis
-            setTimeout(() => {
+            try {
+                // Sprawdź czy Supabase jest zainicjalizowany
+                if (!supabaseClient) {
+                    throw new Error('Brak połączenia z Supabase');
+                }
+                
+                // Przygotuj dane do wysłania
+                const testData = {
+                    student_name: answers.student_name,
+                    test_name: answers.test_name,
+                    test_code: answers.test_code,
+                    answers: answers,
+                    total_points: answers.total_points,
+                    completed_at: new Date().toISOString(),
+                    submitted_at: new Date().toISOString(),
+                    status: 'submitted'
+                };
+                
+                console.log('Wysyłanie danych do Supabase:', testData);
+                
+                // Wyślij dane do Supabase
+                const { data, error } = await supabaseClient
+                    .from('student_answers')
+                    .insert([testData]);
+                
+                if (error) {
+                    throw error;
+                }
+                
+                // Sukces
+                console.log('Dane zapisane w Supabase:', data);
+                
                 // Ukryj ładowanie
                 document.getElementById('loading').style.display = 'none';
                 
                 // Pokaż komunikat sukcesu
                 document.getElementById('save-message').style.display = 'block';
+                document.getElementById('save-message').innerHTML = 
+                    '<i class="fas fa-check"></i> Odpowiedzi zostały pomyślnie zapisane w bazie danych Supabase!';
                 
                 // Zaktualizuj przycisk
                 updateSaveButton();
                 
-                console.log('Wszystkie odpowiedzi zapisane:', answers);
+                // Wyczyść localStorage po udanym zapisie
+                localStorage.removeItem('diagnoza_full_answers');
+                localStorage.removeItem('diagnoza_student_name');
+                localStorage.removeItem('diagnoza_last_save');
                 
-                // Wyświetl podsumowanie
-                const completed = checkAllTasksCompleted();
-                if (completed) {
-                    console.log('=== TEST ZAKOŃCZONY POMYŚLNIE ===');
-                    console.log('Uczeń:', answers.student_name);
-                    console.log('Data:', new Date(answers.timestamp).toLocaleString());
-                    console.log('Wszystkie zadania wypełnione: TAK');
+                // Przejdź do ekranu ukończenia jeśli wszystkie zadania wypełnione
+                if (checkAllTasksCompleted()) {
+                    setTimeout(() => {
+                        navigateToTask(totalTasks + 1);
+                    }, 2000);
                 }
                 
-            }, 1000);
+            } catch (error) {
+                console.error('Błąd zapisu do Supabase:', error);
+                
+                // Ukryj ładowanie
+                document.getElementById('loading').style.display = 'none';
+                
+                // Pokaż komunikat błędu
+                document.getElementById('save-error').style.display = 'block';
+                document.getElementById('save-error').innerHTML = 
+                    '<i class="fas fa-exclamation-triangle"></i> Błąd połączenia z bazą danych. Odpowiedzi zapisane lokalnie.';
+                
+                // Fallback: zapisz w localStorage
+                localStorage.setItem('diagnoza_backup_' + Date.now(), JSON.stringify(answers));
+                
+                alert('Odpowiedzi zostały zapisane lokalnie. Skontaktuj się z nauczycielem.');
+            }
         }
         
-        // Eksportuj odpowiedzi (dla nauczyciela)
+        // Eksportuj odpowiedzi do pliku (backup)
         function exportAnswers() {
             const dataStr = JSON.stringify(answers, null, 2);
             const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
